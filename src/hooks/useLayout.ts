@@ -1,3 +1,4 @@
+import { horizontalSpacing, verticalSpacing } from "./../utils";
 import { useEffect, useRef } from "react";
 import { useReactFlow, useStore, Node, Edge, ReactFlowState } from "reactflow";
 import { stratify, tree } from "d3-hierarchy";
@@ -6,7 +7,7 @@ import { timer } from "d3-timer";
 // initialize the tree layout (see https://observablehq.com/@d3/tree for examples)
 const layout = tree<Node>()
   // the node size configures the spacing between the nodes ([height, width])
-  .nodeSize([150, 350])
+  .nodeSize([verticalSpacing, horizontalSpacing])
   // this is needed for creating equal space between all nodes
   .separation(() => 1);
 

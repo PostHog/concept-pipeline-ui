@@ -1,5 +1,5 @@
 .node {
-  border: 1px solid #0984e3;
+  border: 1px solid #1D4AFF;
   border-radius: 4px;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
@@ -7,7 +7,36 @@
   width: 160px;
   text-align: center;
   font-weight: bold;
-  color: #0984e3;
+  color: #1D4AFF;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.clickhouse {
+  border: 1px solid #DC9300;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+  padding: 12px;
+  width: 160px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  background-color: #DC9300;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.transformation {
+  border: 1px solid #44AF79;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+  padding: 12px;
+  width: 160px;
+  text-align: center;
+  font-weight: bold;
+  color: #44AF79;
   cursor: pointer;
   line-height: 1.2;
 }

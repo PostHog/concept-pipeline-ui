@@ -1,7 +1,7 @@
 .edgeButton {
   cursor: pointer;
   pointer-events: all;
-  stroke: #0984e3;
+  stroke: #44AF79;
   fill: white;
 }
 
@@ -12,12 +12,12 @@
 .edgeButtonText {
   pointer-events: none;
   user-select: none;
-  fill: #0984e3;
+  fill: #44AF79;
 }
 
 .edgePath {
   fill: none;
-  stroke: #0984e3;
+  stroke: #44AF79;
   stroke-width: 1;
 }
 

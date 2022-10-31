@@ -1,12 +1,18 @@
-import { NodeTypes } from 'reactflow';
+import { NodeTypes } from "reactflow";
+import ClickhouseNode from "./ClickhouseNode";
 
-import PlaceholderNode from './PlaceholderNode';
-import WorkflowNode from './WorkflowNode';
+import TransformationNode from "./TransformationNode";
+import WorkflowNode from "./WorkflowNode";
+import NewSource from "./NewSource";
+import NewDestination from "./NewDestination";
 
 // two different node types are needed for our example: workflow and placeholder nodes
 const nodeTypes: NodeTypes = {
-  placeholder: PlaceholderNode,
+  newSource: NewSource,
+  newDestination: NewDestination,
   workflow: WorkflowNode,
+  clickhouse: ClickhouseNode,
+  transformation: TransformationNode,
 };
 
 export default nodeTypes;

@@ -1,10 +1,10 @@
-import { EdgeProps, useReactFlow } from 'reactflow';
+import { EdgeProps, useReactFlow } from "reactflow";
 
-import { uuid, randomLabel } from '../utils';
+import { uuid, randomLabel } from "../utils";
 
 // this hook implements the logic for clicking the button on a workflow edge
 // on edge click: create a node in between the two nodes that are connected by the edge
-function useEdgeClick(id: EdgeProps['id']) {
+function useEdgeClick(id: EdgeProps["id"]) {
   const { setEdges, setNodes, getNode, getEdge } = useReactFlow();
 
   const handleEdgeClick = () => {
@@ -31,7 +31,7 @@ function useEdgeClick(id: EdgeProps['id']) {
       // we place the node at the current position of the target (prevents jumping)
       position: { x: targetNode.position.x, y: targetNode.position.y },
       data: { label: randomLabel() },
-      type: 'workflow',
+      type: "transformation",
     };
 
     // new connection from source to new node
@@ -39,7 +39,7 @@ function useEdgeClick(id: EdgeProps['id']) {
       id: `${edge.source}->${insertNodeId}`,
       source: edge.source,
       target: insertNodeId,
-      type: 'workflow',
+      type: "transformation",
     };
 
     // new connection from new node to target
@@ -47,17 +47,25 @@ function useEdgeClick(id: EdgeProps['id']) {
       id: `${insertNodeId}->${edge.target}`,
       source: insertNodeId,
       target: edge.target,
-      type: 'workflow',
+      type: "transformation",
     };
 
     // remove the edge that was clicked as we have a new connection with a node inbetween
-    setEdges((edges) => edges.filter((e) => e.id !== id).concat([sourceEdge, targetEdge]));
+    setEdges((edges) =>
+      edges.filter((e) => e.id !== id).concat([sourceEdge, targetEdge])
+    );
 
     // insert the node between the source and target node in the react flow state
     setNodes((nodes) => {
-      const targetNodeIndex = nodes.findIndex((node) => node.id === edge.target);
+      const targetNodeIndex = nodes.findIndex(
+        (node) => node.id === edge.target
+      );
 
-      return [...nodes.slice(0, targetNodeIndex), insertNode, ...nodes.slice(targetNodeIndex, nodes.length)];
+      return [
+        ...nodes.slice(0, targetNodeIndex),
+        insertNode,
+        ...nodes.slice(targetNodeIndex, nodes.length),
+      ];
     });
   };
 

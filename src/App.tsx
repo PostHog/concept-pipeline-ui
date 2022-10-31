@@ -23,6 +23,7 @@ import nodeTypes from "./NodeTypes";
 import edgeTypes from "./EdgeTypes";
 
 import "reactflow/dist/style.css";
+import { clickhouseId, horizontalSpacing, verticalSpacing } from "./utils";
 
 const proOptions: ProOptions = { account: "paid-pro", hideAttribution: true };
 
@@ -31,35 +32,43 @@ const proOptions: ProOptions = { account: "paid-pro", hideAttribution: true };
 const defaultNodes: Node[] = [
   {
     id: "1",
-    data: { label: "Web App" },
+    data: { label: "Web App", img: "js.png" },
     position: { x: 0, y: 0 },
     type: "workflow",
   },
   {
     id: "2",
-    data: { label: "+" },
-    position: { x: 350, y: 0 },
-    type: "placeholder",
+    data: { label: "Clearbit Enrichment" },
+    position: { x: horizontalSpacing, y: 0 },
+    type: "transformation",
   },
   {
-    id: "3",
+    id: clickhouseId,
     data: { label: "Clickhouse" },
-    position: { x: 350 * 2, y: 0 },
-    type: "workflow",
+    position: { x: horizontalSpacing * 2, y: 0 },
+    type: "clickhouse",
   },
   {
     id: "4",
-    data: { label: "+" },
-    position: { x: 350 * 3, y: 0 },
-    type: "placeholder",
+    data: { label: "BigQuery", img: "bigquery.svg" },
+    position: { x: horizontalSpacing * 3, y: 0 },
+    type: "workflow",
   },
   {
     id: "5",
-    data: { label: "BigQuery" },
-    position: { x: 350 * 4, y: 0 },
-    type: "workflow",
+    data: { label: "New Source" },
+    position: { x: 0, y: verticalSpacing },
+    type: "newSource",
+  },
+  {
+    id: "6",
+    data: { label: "New Destination" },
+    position: { x: horizontalSpacing * 3, y: verticalSpacing },
+    type: "newDestination",
   },
 ];
+
+const newSource: Node[] = [];
 
 // initial setup: connect the workflow node to the placeholder node with a placeholder edge
 const defaultEdges: Edge[] = [
@@ -67,62 +76,70 @@ const defaultEdges: Edge[] = [
     id: "1=>2",
     source: "1",
     target: "2",
-    type: "placeholder",
+    type: "transformation",
   },
   {
-    id: "2=>3",
+    id: `2=>{$clickhouseId}`,
     source: "2",
-    target: "3",
-    type: "placeholder",
+    target: clickhouseId,
+    type: "transformation",
   },
   {
-    id: "3=>4",
-    source: "3",
+    id: `{$clickhouseId}=>`,
+    source: clickhouseId,
     target: "4",
-    type: "placeholder",
-  },
-  {
-    id: "4=>5",
-    source: "4",
-    target: "5",
-    type: "placeholder",
+    type: "workflow",
   },
 ];
 
 const fitViewOptions = {
-  padding: 0.95,
+  padding: 0.2,
 };
 
 function ReactFlowPro() {
   // this hook call ensures that the layout is re-calculated every time the graph changes
-  useLayout();
+  // useLayout();
 
   return (
-    <>
-      <ReactFlow
-        defaultNodes={defaultNodes}
-        defaultEdges={defaultEdges}
-        proOptions={proOptions}
-        fitView
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        fitViewOptions={fitViewOptions}
-        minZoom={0.2}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        zoomOnDoubleClick={false}
-      >
-        <Background />
-      </ReactFlow>
-    </>
+    <ReactFlow
+      defaultNodes={defaultNodes}
+      defaultEdges={defaultEdges}
+      proOptions={proOptions}
+      fitView
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      fitViewOptions={fitViewOptions}
+      minZoom={0.2}
+      nodesDraggable={false}
+      nodesConnectable={false}
+      zoomOnDoubleClick={false}
+    >
+      <Background />
+    </ReactFlow>
   );
 }
 
 function ReactFlowWrapper() {
   return (
-    <ReactFlowProvider>
-      <ReactFlowPro />
-    </ReactFlowProvider>
+    <>
+      <div
+        style={{
+          position: "absolute",
+          left: "10px",
+          top: "10px",
+          zIndex: "100",
+        }}
+      >
+        <label style={{ padding: "10px 10px" }}>Environment:</label>
+        <select name="cars" id="cars">
+          <option value="Production">Production</option>
+          <option value="Staging">Staging</option>
+        </select>
+      </div>
+      <ReactFlowProvider>
+        <ReactFlowPro />
+      </ReactFlowProvider>
+    </>
   );
 }
 
