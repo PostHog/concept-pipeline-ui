@@ -31,15 +31,33 @@ const proOptions: ProOptions = { account: "paid-pro", hideAttribution: true };
 const defaultNodes: Node[] = [
   {
     id: "1",
-    data: { label: "🌮 Taco" },
+    data: { label: "Web App" },
     position: { x: 0, y: 0 },
     type: "workflow",
   },
   {
     id: "2",
     data: { label: "+" },
-    position: { x: 0, y: 150 },
+    position: { x: 350, y: 0 },
     type: "placeholder",
+  },
+  {
+    id: "3",
+    data: { label: "Clickhouse" },
+    position: { x: 350 * 2, y: 0 },
+    type: "workflow",
+  },
+  {
+    id: "4",
+    data: { label: "+" },
+    position: { x: 350 * 3, y: 0 },
+    type: "placeholder",
+  },
+  {
+    id: "5",
+    data: { label: "BigQuery" },
+    position: { x: 350 * 4, y: 0 },
+    type: "workflow",
   },
 ];
 
@@ -49,6 +67,24 @@ const defaultEdges: Edge[] = [
     id: "1=>2",
     source: "1",
     target: "2",
+    type: "placeholder",
+  },
+  {
+    id: "2=>3",
+    source: "2",
+    target: "3",
+    type: "placeholder",
+  },
+  {
+    id: "3=>4",
+    source: "3",
+    target: "4",
+    type: "placeholder",
+  },
+  {
+    id: "4=>5",
+    source: "4",
+    target: "5",
     type: "placeholder",
   },
 ];

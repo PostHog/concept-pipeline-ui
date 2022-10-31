@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
-import { Handle, Position, NodeProps } from 'reactflow';
-import cx from 'classnames';
+import React, { memo } from "react";
+import { Handle, Position, NodeProps } from "reactflow";
+import cx from "classnames";
 
-import styles from './NodeTypes.module.css';
-import usePlaceholderClick from '../hooks/usePlaceholderClick';
+import styles from "./NodeTypes.module.css";
+import usePlaceholderClick from "../hooks/usePlaceholderClick";
 
 const PlaceholderNode = ({ id, data }: NodeProps) => {
   // see the hook implementation for details of the click handler
@@ -15,8 +15,18 @@ const PlaceholderNode = ({ id, data }: NodeProps) => {
   return (
     <div onClick={onClick} className={nodeClasses} title="click to add a node">
       {data.label}
-      <Handle className={styles.handle} type="target" position={Position.Top} isConnectable={false} />
-      <Handle className={styles.handle} type="source" position={Position.Bottom} isConnectable={false} />
+      <Handle
+        className={styles.handle}
+        type="target"
+        position={Position.Left}
+        isConnectable={false}
+      />
+      <Handle
+        className={styles.handle}
+        type="source"
+        position={Position.Right}
+        isConnectable={false}
+      />
     </div>
   );
 };
