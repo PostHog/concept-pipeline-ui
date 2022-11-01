@@ -12,6 +12,8 @@
 import React from "react";
 import ReactFlow, {
   Background,
+  ConnectionLineType,
+  ConnectionMode,
   Edge,
   Node,
   ProOptions,
@@ -23,7 +25,13 @@ import nodeTypes from "./NodeTypes";
 import edgeTypes from "./EdgeTypes";
 
 import "reactflow/dist/style.css";
-import { clickhouseId, horizontalSpacing, verticalSpacing } from "./utils";
+import {
+  clickhouseId,
+  horizontalSpacing,
+  newDestinationId,
+  newSourceId,
+  verticalSpacing,
+} from "./utils";
 
 const proOptions: ProOptions = { account: "paid-pro", hideAttribution: true };
 
@@ -32,37 +40,48 @@ const proOptions: ProOptions = { account: "paid-pro", hideAttribution: true };
 const defaultNodes: Node[] = [
   {
     id: "1",
-    data: { label: "Web App", img: "js.png" },
+    data: {
+      label: "Web App",
+      img: "js.png",
+      pipelineNumber: 0,
+    },
     position: { x: 0, y: 0 },
     type: "workflow",
   },
   {
     id: "2",
-    data: { label: "Clearbit Enrichment" },
+    data: {
+      label: "Clearbit Enrichment",
+      pipelineNumber: 0,
+    },
     position: { x: horizontalSpacing, y: 0 },
     type: "transformation",
   },
   {
     id: clickhouseId,
-    data: { label: "Clickhouse" },
+    data: { label: "Clickhouse", pipelineNumber: 0 },
     position: { x: horizontalSpacing * 2, y: 0 },
     type: "clickhouse",
   },
   {
     id: "4",
-    data: { label: "BigQuery", img: "bigquery.svg" },
+    data: {
+      label: "BigQuery",
+      img: "bigquery.svg",
+      pipelineNumber: 0,
+    },
     position: { x: horizontalSpacing * 3, y: 0 },
     type: "workflow",
   },
   {
     id: "5",
-    data: { label: "New Source" },
+    data: { label: "New Source", numPipelines: 1 },
     position: { x: 0, y: verticalSpacing },
     type: "newSource",
   },
   {
     id: "6",
-    data: { label: "New Destination" },
+    data: { label: "New Destination", numPipelines: 1 },
     position: { x: horizontalSpacing * 3, y: verticalSpacing },
     type: "newDestination",
   },
@@ -79,13 +98,13 @@ const defaultEdges: Edge[] = [
     type: "transformation",
   },
   {
-    id: `2=>{$clickhouseId}`,
+    id: `2=>${clickhouseId}`,
     source: "2",
     target: clickhouseId,
     type: "transformation",
   },
   {
-    id: `{$clickhouseId}=>`,
+    id: `${clickhouseId}=>`,
     source: clickhouseId,
     target: "4",
     type: "workflow",
@@ -98,7 +117,7 @@ const fitViewOptions = {
 
 function ReactFlowPro() {
   // this hook call ensures that the layout is re-calculated every time the graph changes
-  // useLayout();
+  useLayout();
 
   return (
     <ReactFlow

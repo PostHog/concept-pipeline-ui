@@ -29,7 +29,9 @@ export function useNewSourceClick(id: NodeProps["id"]) {
         y: parentNode.position.y + verticalSpacing,
       },
       type: "newSource",
-      data: { label: "New Source" },
+      data: {
+        label: "New Source",
+      },
     };
 
     // we need a connection from the clicked node to the new placeholder
@@ -48,7 +50,11 @@ export function useNewSourceClick(id: NodeProps["id"]) {
             return {
               ...node,
               type: "workflow",
-              data: { label: "iOS App", img: "swift.png" },
+              data: {
+                label: "iOS App",
+                img: "swift.png",
+                pipelineNumber: parentNode.data.numPipelines,
+              },
             };
           }
           return node;

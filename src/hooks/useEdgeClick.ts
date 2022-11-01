@@ -22,6 +22,12 @@ function useEdgeClick(id: EdgeProps["id"]) {
       return;
     }
 
+    const sourceNode = getNode(edge.source);
+
+    if (!sourceNode) {
+      return;
+    }
+
     // create a unique id for newly added elements
     const insertNodeId = uuid();
 
@@ -30,7 +36,10 @@ function useEdgeClick(id: EdgeProps["id"]) {
       id: insertNodeId,
       // we place the node at the current position of the target (prevents jumping)
       position: { x: targetNode.position.x, y: targetNode.position.y },
-      data: { label: randomLabel() },
+      data: {
+        label: randomLabel(),
+        pipelineNumber: sourceNode.data.pipelineNumber,
+      },
       type: "transformation",
     };
 

@@ -1,4 +1,8 @@
-import { horizontalSpacing, verticalSpacing } from "./../utils";
+import {
+  horizontalSpacing,
+  newDestinationId,
+  verticalSpacing,
+} from "./../utils";
 import { useEffect, useRef } from "react";
 import { useReactFlow, useStore, Node, Edge, ReactFlowState } from "reactflow";
 import { stratify, tree } from "d3-hierarchy";
@@ -13,10 +17,11 @@ const layout = tree<Node>()
 
 const options = { duration: 300 };
 
-// the layouting function
-// accepts current nodes and edges and returns the layouted nodes with their updated positions
-function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
-  // convert nodes and edges into a hierarchical object for using it with the layout function
+function layoutSetOfNodes(
+  nodes: Node[],
+  edges: Edge[],
+  pipelineNumber: number
+): Node[] {
   const hierarchy = stratify<Node>()
     .id((d) => d.id)
     // get the id of each node by searching through the edges
@@ -28,11 +33,85 @@ function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
   // run the layout algorithm with the hierarchy data structure
   const root = layout(hierarchy);
 
+  return root.descendants().map((d) => ({
+    ...d.data,
+    position: { x: d.y, y: d.x + pipelineNumber * verticalSpacing },
+  }));
+}
+
+function transformNewSource(node: Node, numPipelines: number) {
+  node.position.y = numPipelines * verticalSpacing;
+  node.data.numPipelines = numPipelines;
+  return node;
+}
+
+function transformNewDestination(
+  node: Node,
+  numPipelines: number,
+  maxPipelineLength: number
+) {
+  node.position.y = numPipelines * verticalSpacing;
+  node.position.x = (maxPipelineLength - 1) * horizontalSpacing;
+  node.data.numPipelines = numPipelines;
+  return node;
+}
+
+// the layouting function
+// accepts current nodes and edges and returns the layouted nodes with their updated positions
+function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
+  // convert nodes and edges into a hierarchical object for using it with the layout function
+  const pipelines: Record<number, Node[]> = {};
+  let numPipelines = 0;
+  let maxPipelineLength = 1;
+
+  const newSourceNode = nodes.find((node) => node.type == "newSource");
+  const newDestinationNode = nodes.find(
+    (node) => node.type == "newDestination"
+  );
+
+  nodes = nodes.filter(
+    (node) => node.type !== "newSource" && node.type !== "newDestination"
+  );
+
+  debugger;
+
+  nodes.map((node) => {
+    if (node.data.pipelineNumber in pipelines) {
+      pipelines[node.data.pipelineNumber].push(node);
+      maxPipelineLength = Math.max(
+        maxPipelineLength,
+        pipelines[node.data.pipelineNumber].length
+      );
+    } else {
+      pipelines[node.data.pipelineNumber] = [node];
+      numPipelines += 1;
+    }
+  });
+
+  const updatedNodes: Node[] = [];
+
+  Object.keys(pipelines).forEach((_key: any) => {
+    // hack to get round key being a string instead of a number
+    const key = _key as number;
+    updatedNodes.push(...layoutSetOfNodes(pipelines[key], edges, key));
+  });
+
+  if (newSourceNode) {
+    const updatedNewSource = transformNewSource(newSourceNode, numPipelines);
+    updatedNodes.push(updatedNewSource);
+  }
+  if (newDestinationNode) {
+    const updatedNewDestination = transformNewDestination(
+      newDestinationNode,
+      numPipelines,
+      maxPipelineLength
+    );
+    updatedNodes.push(updatedNewDestination);
+  }
+
   // convert the hierarchy back to react flow nodes (the original node is stored as d.data)
   // we only extract the position from the d3 function
-  return root
-    .descendants()
-    .map((d) => ({ ...d.data, position: { x: d.y, y: d.x } }));
+  return updatedNodes;
 }
 
 // this is the store selector that is used for triggering the layout, this returns the number of nodes once they change
